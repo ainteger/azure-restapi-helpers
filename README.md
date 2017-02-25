@@ -6,6 +6,8 @@ This repository is inspired by https://github.com/cmfaustino/PROMPT11-10-Cloud-C
 
 The repository will be updated with more method when I need them, please feel free to create pull requests with missings parts.
 
+The repository is built with ASP.NET Core
+
 ## Methods
 
 ### Queue
