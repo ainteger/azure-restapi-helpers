@@ -24,7 +24,7 @@ namespace Azure.RestApi
             Endpoint = $"https://{storageAccount}.{azureFunction}.core.windows.net/";
             IsTableStorage = isTableStorage;
         }
-        
+
         public HttpRequestMessage GetRequest(
             HttpMethod method,
             string resource,
