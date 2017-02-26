@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
-    public class Queue : IDisposable
+    public class Queue : IQueue, IDisposable
     {
         private ApiHandler ApiHandler { get; }
         private HttpClient Client { get; }
