@@ -1,12 +1,14 @@
 # Azure RestApi helpers
 
-Headers in Azure Rest Api is a pain! I think more than me hates configurations and just want to add things to the storage account.
+Headers in Azure Rest Api is a pain! Since I believe there are a lot of you out there that hates configuration and just want to add things to the storage account, I open sourced this repository. 
 
-This repository is inspired by https://github.com/cmfaustino/PROMPT11-10-Cloud-Computing.cmfaustino/tree/master/Storage_REST_CS/Storage_REST/StorageSampleREST You saved my day when I found your repository! <3
+This repository is inspired by https://github.com/cmfaustino/PROMPT11-10-Cloud-Computing.cmfaustino/tree/master/Storage_REST_CS/Storage_REST/StorageSampleREST. This repo really saved me a lot of headache.
 
-The repository will be updated with more method when I need them, please feel free to create pull requests with missings parts.
+The repository will be updated with more methods when I need them, please feel free to create pull requests with missing parts.
 
-The repository is built with ASP.NET Core
+The repository is built with ASP.NET Core.
+
+~ forever 
 
 ## Methods
 
