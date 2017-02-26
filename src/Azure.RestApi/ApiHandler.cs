@@ -7,7 +7,10 @@ using System.Text;
 
 namespace Azure.RestApi
 {
-    internal class ApiHandler
+    /// <summary>
+    /// Handles common api things
+    /// </summary>
+    public class ApiHandler
     {
         private string StorageAccount { get; }
         private string StorageKey { get; }
@@ -21,7 +24,7 @@ namespace Azure.RestApi
             Endpoint = $"https://{storageAccount}.{azureFunction}.core.windows.net/";
             IsTableStorage = isTableStorage;
         }
-
+        
         public HttpRequestMessage GetRequest(
             HttpMethod method,
             string resource,
@@ -69,7 +72,7 @@ namespace Azure.RestApi
             return request;
         }
 
-        private string GetAuthorizationHeader(HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
+        public string GetAuthorizationHeader(HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
         {
             string messageSignature;
 
@@ -100,7 +103,7 @@ namespace Azure.RestApi
             return AuthorizationHeader;
         }
 
-        private string GetCanonicalizedHeaders(HttpRequestMessage request)
+        public string GetCanonicalizedHeaders(HttpRequestMessage request)
         {
             var sortedHeaders = request.Headers.Where(x => x.Key.ToLowerInvariant().StartsWith("x-ms-", StringComparison.Ordinal))
                 .OrderBy(x => x.Key);
@@ -110,7 +113,7 @@ namespace Azure.RestApi
                     $"{x.Key}:{string.Join(",", x.Value.Select(v => v.Replace("\r\n", string.Empty)))}\n"));
         }
 
-        private string GetCanonicalizedResource(Uri address, string accountName)
+        public string GetCanonicalizedResource(Uri address, string accountName)
         {
             var queryString = new Dictionary<string, string>();
 
