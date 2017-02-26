@@ -89,7 +89,7 @@ namespace Azure.RestApi
             {
                 messageSignature = string.Format("{0}\n\n\n{1}\n{5}\n\n\n\n{2}\n\n\n\n{3}{4}",
                     method,
-                    (method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content.Headers.First(x => x.Key == "Content-Length").Value.First(),
+                    (method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content?.Headers?.FirstOrDefault(x => x.Key == "Content-Length").Value.FirstOrDefault() ?? string.Empty,
                     ifMatch,
                     GetCanonicalizedHeaders(request),
                     GetCanonicalizedResource(request.RequestUri, StorageAccount),
