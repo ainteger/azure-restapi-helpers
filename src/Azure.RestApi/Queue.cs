@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Azure.RestApi
 {
@@ -22,14 +24,90 @@ namespace Azure.RestApi
         /// <param name="queue">Name of queue</param>
         /// <param name="messageBody">Message encoded in UTF-8</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> PutMessageAsync(string queue, string messageBody)
+        public async Task<bool> PutMessageAsync(string queue, string messageBody)
         {
             var messageBodyBytes = new UTF8Encoding().GetBytes(messageBody);
             var messageBodyBase64 = Convert.ToBase64String(messageBodyBytes);
             var message = "<QueueMessage><MessageText>" + messageBodyBase64 + "</MessageText></QueueMessage>";
 
             var request = ApiHandler.GetRequest(HttpMethod.Post, queue + "/messages", message, null);
-            return await Client.SendAsync(request);
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> CreateQueueAsync(string queue)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Put, queue);
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteQueueAsync(string queue)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue);
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<string> PeekMessageAsync(string queue)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Get, queue + "/messages?peekonly=true");
+            var response = await Client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+
+            return default(string);
+        }
+
+        public async Task<string> GetMessageAsync(string queue, bool delete)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Get, queue + "/messages");
+            var response = await Client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+
+                var xml = XElement.Parse(result);
+
+                if (xml.Elements("QueueMessage").Count() > 0)
+                {
+                    var queueMessageElement = xml.Element("QueueMessage");
+
+                    var messageBody64 = queueMessageElement.Element("MessageText").Value;
+                    var messsageBodyBytes = Convert.FromBase64String(messageBody64);
+                    var message = new UTF8Encoding().GetString(messsageBodyBytes);
+
+                    if (delete)
+                    {
+                        var messageId = queueMessageElement.Element("MessageId").Value;
+                        var popReceipt = queueMessageElement.Element("PopReceipt").Value;
+                        await DeleteMessageAsync(queue, messageId, popReceipt);
+                    }
+
+                    return message;
+                }
+            }
+
+            return default(string);
+        }
+
+        public async Task<bool> DeleteMessageAsync(string queue, string messageId, string popReceipt)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ClearMessagesAsync(string queue)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue + "/messages");
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
         }
 
         public void Dispose()
