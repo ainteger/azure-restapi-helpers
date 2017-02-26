@@ -10,9 +10,9 @@ namespace Azure.RestApi
         private ApiHandler ApiHandler { get; }
         private HttpClient Client { get; }
 
-        public Queue(string storageAccount, string storageKey)
+        public Queue(StorageAuthentication storageAuthentication)
         {
-            ApiHandler = new ApiHandler(storageAccount, storageKey, "queue", false);
+            ApiHandler = new ApiHandler(storageAuthentication.AccountName, storageAuthentication.StorageKey, "queue", false);
             Client = new HttpClient();
         }
 
