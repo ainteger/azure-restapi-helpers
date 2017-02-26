@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Azure.RestApi.Tests
@@ -15,9 +12,8 @@ namespace Azure.RestApi.Tests
         [InlineData("queue", "test", "/testaccount/test/messages")]        
         public void GetCanonicalizedResource(string azureFunction, string container, string expected)
         {
-            var url = new Uri($"https://{FAKE_ACCOUNTNAME}.{azureFunction}.core.windows.net/{container}/messages");
-
             //Given
+            var url = new Uri($"https://{FAKE_ACCOUNTNAME}.{azureFunction}.core.windows.net/{container}/messages");
             var apiHandler = new ApiHandler(FAKE_ACCOUNTNAME,FAKE_STORAGEKEY, "queue", false);
 
             //When
