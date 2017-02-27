@@ -35,13 +35,7 @@ namespace Azure.RestApi
 
             return Enumerable.Empty<string>();
         }
-
-        /// <summary>
-        /// Put message to Azure queue
-        /// </summary>
-        /// <param name="queue">Name of queue</param>
-        /// <param name="messageBody">Message encoded in UTF-8</param>
-        /// <returns></returns>
+        
         public async Task<bool> PutMessageAsync(string queue, string messageBody)
         {
             var messageBodyBytes = new UTF8Encoding().GetBytes(messageBody);
