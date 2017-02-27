@@ -51,12 +51,9 @@ namespace Azure.RestApi
             //    request.Headers.Add("MaxDataServiceVersion", "1.0;NetFx");
             //}
 
-            if (headers != null)
+            foreach (var header in headers ?? new SortedList<string, string>())
             {
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                request.Headers.Add(header.Key, header.Value);
             }
 
             if (!string.IsNullOrEmpty(requestBody))
