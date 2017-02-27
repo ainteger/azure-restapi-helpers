@@ -33,23 +33,23 @@ namespace Azure.RestApi
             string ifMatch = "",
             string md5 = "")
         {
-            byte[] byteArray = null;
             var now = DateTime.UtcNow;
-            var uri = Endpoint + resource;
 
-            var request = new HttpRequestMessage(method, uri);
+            var request = new HttpRequestMessage(method, Endpoint + resource);
 
             request.Headers.Add("x-ms-date", now.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
-            request.Headers.Add("x-ms-version", "2009-09-19");
 
-            //TODO: Table storage
-            //if (IsTableStorage)
-            //{
-            //    request.ContentType = "application/atom+xml";
-
-            //    request.Headers.Add("DataServiceVersion", "1.0;NetFx");
-            //    request.Headers.Add("MaxDataServiceVersion", "1.0;NetFx");
-            //}
+            if (IsTableStorage)
+            {
+                request.Headers.Add("x-ms-version", "2016-05-31");
+                request.Headers.Add("DataServiceVersion", "3.0;NetFx");
+                request.Headers.Add("MaxDataServiceVersion", "3.0;NetFx");
+                request.Headers.Add("Accept", "application/json");
+            }
+            else
+            {
+                request.Headers.Add("x-ms-version", "2009-09-19");
+            }
 
             foreach (var header in headers ?? new SortedList<string, string>())
             {
@@ -59,7 +59,7 @@ namespace Azure.RestApi
             if (!string.IsNullOrEmpty(requestBody))
             {
                 request.Headers.Add("Accept-Charset", "UTF-8");
-                byteArray = Encoding.UTF8.GetBytes(requestBody);
+                var byteArray = Encoding.UTF8.GetBytes(requestBody);
                 request.Content = new ByteArrayContent(byteArray);
                 request.Content.Headers.Add("Content-Length", byteArray.Length.ToString());
             }
@@ -71,20 +71,17 @@ namespace Azure.RestApi
 
         public string GetAuthorizationHeader(HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
         {
-            string messageSignature;
-
             if (IsTableStorage)
             {
-                messageSignature = string.Format("{0}\n\n{1}\n{2}\n{3}",
-                    method,
-                    "application/atom+xml",
+                var messageSignature = string.Format("{0}\n{1}",
                     now.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-                    GetCanonicalizedResource(request.RequestUri, StorageAccount)
-                    );
+                    $"/{StorageAccount}/{request.RequestUri.AbsolutePath.TrimStart('/')}");
+
+                return $"SharedKeyLite {StorageAccount}:{GetSignature(messageSignature)}";
             }
             else
             {
-                messageSignature = string.Format("{0}\n\n\n{1}\n{5}\n\n\n\n{2}\n\n\n\n{3}{4}",
+                var messageSignature = string.Format("{0}\n\n\n{1}\n{5}\n\n\n\n{2}\n\n\n\n{3}{4}",
                     method,
                     (method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content?.Headers?.FirstOrDefault(x => x.Key == "Content-Length").Value.FirstOrDefault() ?? string.Empty,
                     ifMatch,
@@ -92,12 +89,16 @@ namespace Azure.RestApi
                     GetCanonicalizedResource(request.RequestUri, StorageAccount),
                     md5
                     );
-            }
 
-            var SignatureBytes = Encoding.UTF8.GetBytes(messageSignature);
+                return $"SharedKey {StorageAccount}:{GetSignature(messageSignature)}";
+            }
+        }
+
+        public string GetSignature(string messageSignature)
+        {
+            var signatureBytes = Encoding.UTF8.GetBytes(messageSignature);
             var SHA256 = new System.Security.Cryptography.HMACSHA256(Convert.FromBase64String(StorageKey));
-            var AuthorizationHeader = "SharedKey " + StorageAccount + ":" + Convert.ToBase64String(SHA256.ComputeHash(SignatureBytes));
-            return AuthorizationHeader;
+            return Convert.ToBase64String(SHA256.ComputeHash(signatureBytes));
         }
 
         public string GetCanonicalizedHeaders(HttpRequestMessage request)
