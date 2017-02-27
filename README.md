@@ -9,8 +9,3 @@ The repository will be updated with more methods when I need them, please feel f
 The repository is built with ASP.NET Core.
 
 ~ forever 
-
-## Methods
-
-### Queue
-* PutMessage
