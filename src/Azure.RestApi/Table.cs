@@ -15,7 +15,7 @@ namespace Azure.RestApi
             Client = new HttpClient();
         }
 
-        public async Task<Result> GetRowAsync<Result>(string table, string partitionKey, string rowKey)
+        public async Task<Entity> GetRowAsync<Entity>(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
             var response = await Client.SendAsync(request);
@@ -23,10 +23,25 @@ namespace Azure.RestApi
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Result>(json);
+                return JsonConvert.DeserializeObject<Entity>(json);
             }
 
-            return default(Result);
+            return default(Entity);
+        }
+
+        public async Task<bool> CreateRowAsync<Entity>(string table, Entity entity)
+        {
+            var json = JsonConvert.SerializeObject(entity);
+            var request = ApiHandler.GetRequest(HttpMethod.Post, table, json);
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey)
+        {
+            var request = ApiHandler.GetRequest(HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
+            var response = await Client.SendAsync(request);
+            return response.IsSuccessStatusCode;
         }
     }
 }

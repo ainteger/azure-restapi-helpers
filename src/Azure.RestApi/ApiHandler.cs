@@ -62,6 +62,16 @@ namespace Azure.RestApi
                 var byteArray = Encoding.UTF8.GetBytes(requestBody);
                 request.Content = new ByteArrayContent(byteArray);
                 request.Content.Headers.Add("Content-Length", byteArray.Length.ToString());
+
+                if (IsTableStorage)
+                {
+                    request.Content.Headers.Add("Content-Type", "application/json");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(ifMatch))
+            {
+                request.Headers.Add("If-Match", ifMatch);
             }
 
             request.Headers.Add("Authorization", GetAuthorizationHeader(method, now, request, ifMatch, md5));
