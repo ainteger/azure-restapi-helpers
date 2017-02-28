@@ -10,7 +10,7 @@ namespace Azure.RestApi
             StorageType storageType,
             HttpMethod method,
             string resource,
-            string requestBody = null,
+            byte[] requestBody = null,
             SortedList<string, string> headers = null,
             string ifMatch = "",
             string md5 = "");

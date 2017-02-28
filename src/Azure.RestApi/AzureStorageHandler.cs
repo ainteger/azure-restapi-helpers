@@ -7,26 +7,23 @@ using System.Net.Http;
 using System.Text;
 
 namespace Azure.RestApi
-{
-    /// <summary>
-    /// Handles common api things
-    /// </summary>
+{    
     public class AzureStorageHandler : IAzureStorageHandler
     {
         private string StorageAccount { get; }
-        private string StorageKey { get; }      
+        private string StorageKey { get; }
 
         public AzureStorageHandler(StorageAuthentication storageAuthentication)
-        {            
+        {
             StorageAccount = storageAuthentication.AccountName;
-            StorageKey = storageAuthentication.StorageKey;            
+            StorageKey = storageAuthentication.StorageKey;
         }
 
         public HttpRequestMessage GetRequest(
             StorageType storageType,
             HttpMethod method,
             string resource,
-            string requestBody = null,
+            byte[] requestBody = null,
             SortedList<string, string> headers = null,
             string ifMatch = "",
             string md5 = "")
@@ -47,6 +44,11 @@ namespace Azure.RestApi
             else
             {
                 request.Headers.Add("x-ms-version", "2009-09-19");
+
+                if (storageType == StorageType.Blob)
+                {
+                    request.Headers.Add("x-ms-blob-type", "BlockBlob");
+                }
             }
 
             foreach (var header in headers ?? new SortedList<string, string>())
@@ -54,16 +56,24 @@ namespace Azure.RestApi
                 request.Headers.Add(header.Key, header.Value);
             }
 
-            if (!string.IsNullOrEmpty(requestBody))
+             /*
+             * Content-Type application/octet-stream
+             * Content-Length
+             */
+
+            if (requestBody != null)
             {
                 request.Headers.Add("Accept-Charset", "UTF-8");
-                var byteArray = Encoding.UTF8.GetBytes(requestBody);
-                request.Content = new ByteArrayContent(byteArray);
-                request.Content.Headers.Add("Content-Length", byteArray.Length.ToString());
+                request.Content = new ByteArrayContent(requestBody);
+                request.Content.Headers.Add("Content-Length", requestBody.Length.ToString());
 
                 if (storageType == StorageType.Table)
                 {
                     request.Content.Headers.Add("Content-Type", "application/json");
+                }
+                else if (storageType == StorageType.Blob)
+                {
+                    request.Content.Headers.Add("Content-Type", "application/octet-stream");
                 }
             }
 

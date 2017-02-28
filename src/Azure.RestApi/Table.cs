@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Azure.RestApi
@@ -34,7 +35,7 @@ namespace Azure.RestApi
         public async Task<bool> CreateRowAsync<Entity>(string table, Entity entity)
         {
             var json = JsonConvert.SerializeObject(entity);
-            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, json);
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(json));
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }

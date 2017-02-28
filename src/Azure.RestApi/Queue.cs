@@ -42,7 +42,7 @@ namespace Azure.RestApi
             var messageBodyBase64 = Convert.ToBase64String(messageBodyBytes);
             var message = "<QueueMessage><MessageText>" + messageBodyBase64 + "</MessageText></QueueMessage>";
 
-            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Post, queue + "/messages", message, null);
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Post, queue + "/messages", Encoding.UTF8.GetBytes(message), null);
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
