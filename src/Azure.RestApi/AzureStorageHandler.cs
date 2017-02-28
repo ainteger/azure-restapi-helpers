@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using Azure.RestApi.Models;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,22 +11,19 @@ namespace Azure.RestApi
     /// <summary>
     /// Handles common api things
     /// </summary>
-    public class ApiHandler
+    public class AzureStorageHandler : IAzureStorageHandler
     {
         private string StorageAccount { get; }
-        private string StorageKey { get; }
-        private string Endpoint { get; }
-        private bool IsTableStorage { get; }
+        private string StorageKey { get; }      
 
-        public ApiHandler(string storageAccount, string storageKey, string azureFunction, bool isTableStorage)
-        {
-            StorageAccount = storageAccount;
-            StorageKey = storageKey;
-            Endpoint = $"https://{storageAccount}.{azureFunction}.core.windows.net/";
-            IsTableStorage = isTableStorage;
+        public AzureStorageHandler(StorageAuthentication storageAuthentication)
+        {            
+            StorageAccount = storageAuthentication.AccountName;
+            StorageKey = storageAuthentication.StorageKey;            
         }
 
         public HttpRequestMessage GetRequest(
+            StorageType storageType,
             HttpMethod method,
             string resource,
             string requestBody = null,
@@ -35,11 +33,11 @@ namespace Azure.RestApi
         {
             var now = DateTime.UtcNow;
 
-            var request = new HttpRequestMessage(method, Endpoint + resource);
+            var request = new HttpRequestMessage(method, GetBaseUri(storageType) + resource);
 
             request.Headers.Add("x-ms-date", now.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
 
-            if (IsTableStorage)
+            if (storageType == StorageType.Table)
             {
                 request.Headers.Add("x-ms-version", "2016-05-31");
                 request.Headers.Add("DataServiceVersion", "3.0;NetFx");
@@ -63,7 +61,7 @@ namespace Azure.RestApi
                 request.Content = new ByteArrayContent(byteArray);
                 request.Content.Headers.Add("Content-Length", byteArray.Length.ToString());
 
-                if (IsTableStorage)
+                if (storageType == StorageType.Table)
                 {
                     request.Content.Headers.Add("Content-Type", "application/json");
                 }
@@ -74,14 +72,14 @@ namespace Azure.RestApi
                 request.Headers.Add("If-Match", ifMatch);
             }
 
-            request.Headers.Add("Authorization", GetAuthorizationHeader(method, now, request, ifMatch, md5));
+            request.Headers.Add("Authorization", GetAuthorizationHeader(storageType, method, now, request, ifMatch, md5));
 
             return request;
         }
 
-        public string GetAuthorizationHeader(HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
+        public string GetAuthorizationHeader(StorageType storageType, HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
         {
-            if (IsTableStorage)
+            if (storageType == StorageType.Table)
             {
                 var messageSignature = string.Format("{0}\n{1}",
                     now.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
@@ -96,7 +94,7 @@ namespace Azure.RestApi
                     (method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content?.Headers?.FirstOrDefault(x => x.Key == "Content-Length").Value.FirstOrDefault() ?? string.Empty,
                     ifMatch,
                     GetCanonicalizedHeaders(request),
-                    GetCanonicalizedResource(request.RequestUri, StorageAccount),
+                    GetCanonicalizedResource(storageType, request.RequestUri, StorageAccount),
                     md5
                     );
 
@@ -121,11 +119,11 @@ namespace Azure.RestApi
                     $"{x.Key}:{string.Join(",", x.Value.Select(v => v.Replace("\r\n", string.Empty)))}\n"));
         }
 
-        public string GetCanonicalizedResource(Uri address, string accountName)
+        public string GetCanonicalizedResource(StorageType storageType, Uri address, string accountName)
         {
             var queryString = new Dictionary<string, string>();
 
-            if (!IsTableStorage)
+            if (storageType != StorageType.Table)
             {
                 var queryStringValues = QueryHelpers.ParseQuery(address.Query);
 
@@ -136,6 +134,11 @@ namespace Azure.RestApi
             }
 
             return $"/{accountName}{address.AbsolutePath}{string.Join(string.Empty, queryString.OrderBy(x => x.Key).Select(x => $"\n{x.Key}:{x.Value}"))}";
+        }
+
+        private string GetBaseUri(StorageType storageType)
+        {
+            return $"https://{StorageAccount}.{storageType.ToString().ToLower()}.core.windows.net/";
         }
     }
 }

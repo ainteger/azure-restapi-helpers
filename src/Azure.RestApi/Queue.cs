@@ -11,18 +11,18 @@ namespace Azure.RestApi
 {
     public class Queue : IQueue, IDisposable
     {
-        private ApiHandler ApiHandler { get; }
+        private IAzureStorageHandler ApiHandler { get; }
         private HttpClient Client { get; }
 
-        public Queue(StorageAuthentication storageAuthentication)
+        public Queue(IAzureStorageHandler apiHandler, StorageAuthentication storageAuthentication)
         {
-            ApiHandler = new ApiHandler(storageAuthentication.AccountName, storageAuthentication.StorageKey, "queue", false);
+            ApiHandler = apiHandler;
             Client = new HttpClient();
         }
 
         public async Task<IEnumerable<string>> ListQueuesAsync()
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Get, "?comp=list");
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Get, "?comp=list");
             var response = await Client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -35,35 +35,35 @@ namespace Azure.RestApi
 
             return Enumerable.Empty<string>();
         }
-        
+
         public async Task<bool> PutMessageAsync(string queue, string messageBody)
         {
             var messageBodyBytes = new UTF8Encoding().GetBytes(messageBody);
             var messageBodyBase64 = Convert.ToBase64String(messageBodyBytes);
             var message = "<QueueMessage><MessageText>" + messageBodyBase64 + "</MessageText></QueueMessage>";
 
-            var request = ApiHandler.GetRequest(HttpMethod.Post, queue + "/messages", message, null);
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Post, queue + "/messages", message, null);
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> CreateQueueAsync(string queue)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Put, queue);
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Put, queue);
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteQueueAsync(string queue)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue);
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue);
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<string> PeekMessageAsync(string queue)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Get, queue + "/messages?peekonly=true");
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Get, queue + "/messages?peekonly=true");
             var response = await Client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -84,7 +84,7 @@ namespace Azure.RestApi
 
         public async Task<IQueueMessage> GetMessageAsync(string queue)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Get, queue + "/messages");
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Get, queue + "/messages");
             var response = await Client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -114,17 +114,17 @@ namespace Azure.RestApi
 
         public async Task<bool> DeleteMessageAsync(string queue, Guid messageId, string popReceipt)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> ClearMessagesAsync(string queue)
         {
-            var request = ApiHandler.GetRequest(HttpMethod.Delete, queue + "/messages");
+            var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue + "/messages");
             var response = await Client.SendAsync(request);
             return response.IsSuccessStatusCode;
-        }       
+        }
 
         public void Dispose()
         {
