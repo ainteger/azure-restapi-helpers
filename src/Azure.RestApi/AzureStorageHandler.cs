@@ -52,7 +52,7 @@ namespace Azure.RestApi
 
                 if (storageType == StorageType.Table)
                 {
-                    request.Content.Headers.Add("Content-Type", "application/json");
+                    request.Content.Headers.Add("Content-Type", "application/json;odata=nometadata");
                 }
                 else if (storageType == StorageType.Blob)
                 {
