@@ -1,5 +1,4 @@
 ﻿using Azure.RestApi.Models;
-using System.Collections.Generic;
 using System.Net.Http;
 
 namespace Azure.RestApi
@@ -11,8 +10,6 @@ namespace Azure.RestApi
             HttpMethod method,
             string resource,
             byte[] requestBody = null,
-            SortedList<string, string> headers = null,
-            string ifMatch = "",
-            string md5 = "");
+            string ifMatch = "");
     }
 }

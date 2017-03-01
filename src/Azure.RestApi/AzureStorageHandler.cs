@@ -23,10 +23,8 @@ namespace Azure.RestApi
             StorageType storageType,
             HttpMethod method,
             string resource,
-            byte[] requestBody = null,
-            SortedList<string, string> headers = null,
-            string ifMatch = "",
-            string md5 = "")
+            byte[] requestBody = null,            
+            string ifMatch = "")
         {
             var now = DateTime.UtcNow;
 
@@ -49,18 +47,8 @@ namespace Azure.RestApi
                 {
                     request.Headers.Add("x-ms-blob-type", "BlockBlob");
                 }
-            }
-
-            foreach (var header in headers ?? new SortedList<string, string>())
-            {
-                request.Headers.Add(header.Key, header.Value);
-            }
-
-             /*
-             * Content-Type application/octet-stream
-             * Content-Length
-             */
-
+            }            
+            
             if (requestBody != null)
             {
                 request.Headers.Add("Accept-Charset", "UTF-8");
@@ -82,12 +70,12 @@ namespace Azure.RestApi
                 request.Headers.Add("If-Match", ifMatch);
             }
 
-            request.Headers.Add("Authorization", GetAuthorizationHeader(storageType, method, now, request, ifMatch, md5));
+            request.Headers.Add("Authorization", GetAuthorizationHeader(storageType, method, now, request, ifMatch));
 
             return request;
         }
 
-        public string GetAuthorizationHeader(StorageType storageType, HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "", string md5 = "")
+        public string GetAuthorizationHeader(StorageType storageType, HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "")
         {
             if (storageType == StorageType.Table)
             {
@@ -104,8 +92,7 @@ namespace Azure.RestApi
                     (method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content?.Headers?.FirstOrDefault(x => x.Key == "Content-Length").Value.FirstOrDefault() ?? string.Empty,
                     ifMatch,
                     GetCanonicalizedHeaders(request),
-                    GetCanonicalizedResource(storageType, request.RequestUri, StorageAccount),
-                    md5
+                    GetCanonicalizedResource(storageType, request.RequestUri, StorageAccount)
                     );
 
                 return $"SharedKey {StorageAccount}:{GetSignature(messageSignature)}";
