@@ -1,27 +1,26 @@
 ﻿using Azure.RestApi.Models;
 using Newtonsoft.Json;
-using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
-    public class Table : ITable, IDisposable
+    public class Table : ITable
     {
         private IAzureStorageHandler ApiHandler { get; }
-        private HttpClient Client { get; }
+        private IWebRequest WebRequest { get; }
 
-        public Table(IAzureStorageHandler apiHandler, StorageAuthentication storageAuthentication)
+        public Table(IAzureStorageHandler apiHandler, IWebRequest webRequest, StorageAuthentication storageAuthentication)
         {
             ApiHandler = apiHandler;
-            Client = new HttpClient();
+            WebRequest = webRequest;
         }
 
         public async Task<Entity> GetRowAsync<Entity>(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -36,19 +35,15 @@ namespace Azure.RestApi
         {
             var json = JsonConvert.SerializeObject(entity);
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(json));
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
-        }
-        public void Dispose()
-        {
-            Client.Dispose();
         }
     }
 }

@@ -1,32 +1,31 @@
 ﻿using Azure.RestApi.Models;
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
-    public class Blob : IBlob, IDisposable
+    public class Blob : IBlob
     {
         private IAzureStorageHandler ApiHandler { get; }
-        private HttpClient Client { get; }
+        private IWebRequest WebRequest { get; }
 
-        public Blob(IAzureStorageHandler apiHandler, StorageAuthentication storageAuthentication)
+        public Blob(IAzureStorageHandler apiHandler, IWebRequest webRequest, StorageAuthentication storageAuthentication)
         {
             ApiHandler = apiHandler;
-            Client = new HttpClient();
+            WebRequest = webRequest;
         }
 
         public async Task<bool> PutBlobAsync(string container, string contentName, byte[] content)
         {
             var request = ApiHandler.GetRequest(StorageType.Blob, HttpMethod.Put, $"{container}/{contentName}", content);
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<byte[]> GetBlobAsync(string container, string contentName)
         {
             var request = ApiHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}/{contentName}");
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -39,13 +38,8 @@ namespace Azure.RestApi
         public async Task<bool> DeleteBlobAsync(string container, string contentName)
         {
             var request = ApiHandler.GetRequest(StorageType.Blob, HttpMethod.Delete, $"{container}/{contentName}");
-            var response = await Client.SendAsync(request);
+            var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
-        }
-
-        public void Dispose()
-        {
-            Client.Dispose();
         }
     }
 }

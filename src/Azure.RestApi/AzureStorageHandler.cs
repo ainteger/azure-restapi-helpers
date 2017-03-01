@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 
 namespace Azure.RestApi
-{    
+{
     public class AzureStorageHandler : IAzureStorageHandler
     {
         private string StorageAccount { get; }
@@ -19,12 +19,7 @@ namespace Azure.RestApi
             StorageKey = storageAuthentication.StorageKey;
         }
 
-        public HttpRequestMessage GetRequest(
-            StorageType storageType,
-            HttpMethod method,
-            string resource,
-            byte[] requestBody = null,            
-            string ifMatch = "")
+        public HttpRequestMessage GetRequest(StorageType storageType, HttpMethod method, string resource, byte[] requestBody = null, string ifMatch = "")
         {
             var now = DateTime.UtcNow;
 
@@ -47,8 +42,8 @@ namespace Azure.RestApi
                 {
                     request.Headers.Add("x-ms-blob-type", "BlockBlob");
                 }
-            }            
-            
+            }
+
             if (requestBody != null)
             {
                 request.Headers.Add("Accept-Charset", "UTF-8");
@@ -75,7 +70,7 @@ namespace Azure.RestApi
             return request;
         }
 
-        public string GetAuthorizationHeader(StorageType storageType, HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch = "")
+        public string GetAuthorizationHeader(StorageType storageType, HttpMethod method, DateTime now, HttpRequestMessage request, string ifMatch)
         {
             if (storageType == StorageType.Table)
             {
