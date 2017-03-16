@@ -3,12 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>Azure.RestApi</AssemblyName>
-    <PackageId>Azure.RestApi</PackageId>
+    <PackageId>Ainteger.Azure.RestApi</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/ainteger/azure-restapi-helpers/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ainteger/azure-restapi-helpers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ainteger/azure-restapi-helpers</RepositoryUrl>
+    <Description>Help functions for Azure rest api.</Description>
+    <Authors>Andreas Litzell Ivarsson</Authors>
+    <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
+    <PackageTags>azure storage restapi</PackageTags>
+    <PackageReleaseNotes>Initial version of help classes for azure rest api</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
