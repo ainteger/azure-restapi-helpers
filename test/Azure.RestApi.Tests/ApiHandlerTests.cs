@@ -14,10 +14,10 @@ namespace Azure.RestApi.Tests
         {
             //Given
             var url = new Uri($"https://{FAKE_ACCOUNTNAME}.{azureFunction}.core.windows.net/{container}/messages");
-            var apiHandler = new ApiHandler(FAKE_ACCOUNTNAME,FAKE_STORAGEKEY, "queue", false);
-
+            var handler = new AzureStorageHandler(new StorageAuthentication { AccountName = FAKE_ACCOUNTNAME, StorageKey = FAKE_STORAGEKEY });
+            
             //When
-            var actual = apiHandler.GetCanonicalizedResource(url, FAKE_ACCOUNTNAME);
+            var actual = handler.GetCanonicalizedResource(Models.StorageType.Queue, url, FAKE_ACCOUNTNAME);
 
             //Then
             Assert.Equal(expected, actual);
