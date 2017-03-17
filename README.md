@@ -9,3 +9,17 @@ The repository will be updated with more methods when I need them, please feel f
 The repository is built with ASP.NET Core.
 
 ~ forever 
+
+## Sample code
+
+It´s possible to use injection and this is an example of startup configuration
+
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddSingleton(typeof(StorageAuthentication), new StorageAuthentication { AccountName = "StorageAccountName", StorageKey = "StorageKey" });
+	services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
+	services.AddScoped<IWebRequest, WebRequest>();
+	services.AddScoped<ITable, Table>();
+	services.AddScoped<IQueue, Queue>();
+	services.AddScoped<IBlob, Blob>();
+}
