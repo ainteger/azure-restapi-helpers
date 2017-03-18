@@ -18,7 +18,8 @@
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Initial version of help classes for azure rest api</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed a bug preventing put of blob</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
