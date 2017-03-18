@@ -11,7 +11,7 @@ namespace Azure.RestApi
         private IAzureStorageHandler ApiHandler { get; }
         private IWebRequest WebRequest { get; }
 
-        public Table(IAzureStorageHandler apiHandler, IWebRequest webRequest, StorageAuthentication storageAuthentication)
+        public Table(IAzureStorageHandler apiHandler, IWebRequest webRequest)
         {
             ApiHandler = apiHandler;
             WebRequest = webRequest;
