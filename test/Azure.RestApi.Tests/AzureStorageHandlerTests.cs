@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azure.RestApi.Models;
+using System;
 using System.Net.Http;
 using Xunit;
 
@@ -39,20 +40,21 @@ namespace Azure.RestApi.Tests
             Assert.Equal("SharedKey", actual.Headers.Authorization.Scheme);
         }
 
-        [Fact]
-        public void GetAuthorizationHeader()
+        [Theory]
+        [InlineData(StorageType.Queue, "https://testaccount.queue.core.windows.net/testqueue/messages", "SharedKey testaccount:LNp4K2Tjzr863roy7RAwYUr9h3R47zHqT2g7EC5UClY=")]
+
+        public void GetAuthorizationHeader(StorageType storageType, string url, string expected)
         {
             //Given
-            var storageType = Models.StorageType.Queue;
             var method = HttpMethod.Get;
             var timestamp = new DateTime(2017, 1, 1, 12, 34, 2);
-            var fakeRequest = new HttpRequestMessage(method, "https://testaccount.queue.core.windows.net/testqueue/messages");
+            var fakeRequest = new HttpRequestMessage(method, url);
 
             //When
             var actual = GetHandler().GetAuthorizationHeader(storageType, method, timestamp, fakeRequest, "");
 
             //Then
-            Assert.Equal("SharedKey testaccount:LNp4K2Tjzr863roy7RAwYUr9h3R47zHqT2g7EC5UClY=", actual);
+            Assert.Equal(expected, actual);
         }
     }
 }
