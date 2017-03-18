@@ -38,5 +38,21 @@ namespace Azure.RestApi.Tests
             Assert.Equal(new Uri("https://testaccount.queue.core.windows.net/testqueue/messages"), actual.RequestUri);
             Assert.Equal("SharedKey", actual.Headers.Authorization.Scheme);
         }
+
+        [Fact]
+        public void GetAuthorizationHeader()
+        {
+            //Given
+            var storageType = Models.StorageType.Queue;
+            var method = HttpMethod.Get;
+            var timestamp = new DateTime(2017, 1, 1, 12, 34, 2);
+            var fakeRequest = new HttpRequestMessage(method, "https://testaccount.queue.core.windows.net/testqueue/messages");
+
+            //When
+            var actual = GetHandler().GetAuthorizationHeader(storageType, method, timestamp, fakeRequest, "");
+
+            //Then
+            Assert.Equal("SharedKey testaccount:LNp4K2Tjzr863roy7RAwYUr9h3R47zHqT2g7EC5UClY=", actual);
+        }
     }
 }
