@@ -45,8 +45,7 @@ namespace Azure.RestApi
             }
 
             if (requestBody != null)
-            {
-                request.Headers.Add("Accept-Charset", "UTF-8");
+            {                
                 request.Content = new ByteArrayContent(requestBody);
                 request.Content.Headers.Add("Content-Length", requestBody.Length.ToString());
 
@@ -54,9 +53,10 @@ namespace Azure.RestApi
                 {
                     request.Content.Headers.Add("Content-Type", "application/json;odata=nometadata");
                 }
-                else if (storageType == StorageType.Blob)
+                
+                if (storageType != StorageType.Blob)
                 {
-                    request.Content.Headers.Add("Content-Type", "application/octet-stream");
+                    request.Headers.Add("Accept-Charset", "UTF-8");
                 }
             }
 
