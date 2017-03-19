@@ -10,6 +10,14 @@ The repository is built as NetStandard and by that possible to use both in Asp.N
 
 ~ forever 
 
+## nuget
+
+Project can be found as nuget package at https://www.nuget.org/packages/Ainteger.Azure.RestApi/
+
+To install Azure Restapi helpers, run the following command in the Package Manager Console
+
+	PM> Install-Package Ainteger.Azure.RestApi in 
+
 ## Sample code
 
 The code is really simple to use with IoC and this is an example of how to configurate
