@@ -6,20 +6,20 @@ This repository is inspired by https://github.com/cmfaustino/PROMPT11-10-Cloud-C
 
 The repository will be updated with more methods when I need them, please feel free to create pull requests with missing parts.
 
-The repository is built with ASP.NET Core.
+The repository is built as NetStandard and by that possible to use both in Asp.Net Core and older NET Framework.
 
 ~ forever 
 
 ## Sample code
 
-It´s possible to use injection and this is an example of startup configuration
+The code is really simple to use with IoC and this is an example of how to configurate
 
-public void ConfigureServices(IServiceCollection services)
-{
-	services.AddSingleton(typeof(StorageAuthentication), new StorageAuthentication { AccountName = "StorageAccountName", StorageKey = "StorageKey" });
-	services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
-	services.AddScoped<IWebRequest, WebRequest>();
-	services.AddScoped<ITable, Table>();
-	services.AddScoped<IQueue, Queue>();
-	services.AddScoped<IBlob, Blob>();
-}
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddSingleton(typeof(StorageAuthentication), new StorageAuthentication { AccountName = "StorageAccountName", StorageKey = "StorageKey" });
+		services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
+		services.AddScoped<IWebRequest, WebRequest>();
+		services.AddScoped<ITable, Table>();
+		services.AddScoped<IQueue, Queue>();
+		services.AddScoped<IBlob, Blob>();
+	}
