@@ -19,7 +19,7 @@ namespace Azure.RestApi.Tests
             var expected = "/testaccount/";
 
             //When
-            var actual = GetHandler().GetCanonicalizedResource(Models.StorageType.Queue, FakeData.GetBaseUrl(FakeData.QUEUE), FakeData.ACCOUNTNAME);
+            var actual = GetHandler().GetCanonicalizedResource(StorageType.Queue, FakeData.GetBaseUrl(FakeData.QUEUE), FakeData.ACCOUNTNAME);
 
             //Then
             Assert.Equal(expected, actual);
@@ -32,7 +32,7 @@ namespace Azure.RestApi.Tests
             var queue = "testqueue";
 
             //When
-            var actual = GetHandler().GetRequest(Models.StorageType.Queue, HttpMethod.Get, $"{queue}/messages");
+            var actual = GetHandler().GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages");
 
             //Then
             Assert.Equal(HttpMethod.Get, actual.Method);
@@ -42,7 +42,8 @@ namespace Azure.RestApi.Tests
 
         [Theory]
         [InlineData(StorageType.Queue, "https://testaccount.queue.core.windows.net/testqueue/messages", "SharedKey testaccount:LNp4K2Tjzr863roy7RAwYUr9h3R47zHqT2g7EC5UClY=")]
-
+        [InlineData(StorageType.Blob, "https://testaccount.blob.core.windows.net/testblob/testblob", "SharedKey testaccount:VP1o60IMARJv3EcTExvm1NIJmoZUUmQ8QKzUwNxI+ic=")]
+        [InlineData(StorageType.Table, "https://testaccount.blob.core.windows.net/testtable(PartitionKey='testpartitionkey',RowKey='testrowkey')", "SharedKeyLite testaccount:uQ3szkBt7rY4WVSMSW/prIZNHAOiOBLdwENtQLi28C4=")]
         public void GetAuthorizationHeader(StorageType storageType, string url, string expected)
         {
             //Given
