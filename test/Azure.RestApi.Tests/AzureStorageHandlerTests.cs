@@ -57,5 +57,18 @@ namespace Azure.RestApi.Tests
             //Then
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void GetSignature()
+        {
+            //Given
+            var expected = "H/5kpHyEA6a0kf+YI8CMDgiaw12aCPBi04s7JRHdFpM=";
+
+            //When
+            var actual = GetHandler().GetSignature("justtestingarandomvalueisgood");
+
+            //Then
+            Assert.Equal(expected, actual);
+        }
     }
 }
