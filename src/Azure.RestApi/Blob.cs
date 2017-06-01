@@ -22,7 +22,7 @@ namespace Azure.RestApi
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<byte[]> GetBlobAsync(string container, string contentName)
+        public async Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName)
         {
             var request = ApiHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}/{contentName}");
             var response = await WebRequest.SendAsync(request);
