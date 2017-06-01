@@ -77,7 +77,13 @@ namespace Azure.RestApi
 
         public async Task<string> PopMessageOrDefaultAsync(string queue)
         {
-            var message = await GetMessageOrDefaultAsync(queue);            
+            var message = await GetMessageOrDefaultAsync(queue);
+
+            if (message == null)
+            {
+                return default(string);
+            }
+
             await DeleteMessageAsync(queue, message.Id, message.PopReceipt);
             return message.Content;
         }
