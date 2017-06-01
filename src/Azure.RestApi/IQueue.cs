@@ -36,19 +36,19 @@ namespace Azure.RestApi
         /// </summary>
         /// <param name="queue">Name of queue</param>
         /// <returns>Message text</returns>
-        Task<string> PeekMessageAsync(string queue);
+        Task<string> PeekMessageOrDefaultAsync(string queue);
         /// <summary>
         /// Get message and delete it
         /// </summary>
         /// <param name="queue">Name of queue</param>
         /// <returns>Message text</returns>
-        Task<string> PopMessageAsync(string queue);
+        Task<string> PopMessageOrDefaultAsync(string queue);
         /// <summary>
         /// Get message without delete it
         /// </summary>
         /// <param name="queue">Name of queue</param>
         /// <returns>Message context</returns>
-        Task<IQueueMessage> GetMessageAsync(string queue);
+        Task<IQueueMessage> GetMessageOrDefaultAsync(string queue);
         /// <summary>
         /// Delete message
         /// </summary>

@@ -61,7 +61,7 @@ namespace Azure.RestApi
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<string> PeekMessageAsync(string queue)
+        public async Task<string> PeekMessageOrDefaultAsync(string queue)
         {
             var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages?peekonly=true");
             var response = await WebRequest.SendAsync(request);
@@ -75,14 +75,14 @@ namespace Azure.RestApi
             return default(string);
         }
 
-        public async Task<string> PopMessageAsync(string queue)
+        public async Task<string> PopMessageOrDefaultAsync(string queue)
         {
-            var message = await GetMessageAsync(queue);
+            var message = await GetMessageOrDefaultAsync(queue);            
             await DeleteMessageAsync(queue, message.Id, message.PopReceipt);
             return message.Content;
         }
 
-        public async Task<IQueueMessage> GetMessageAsync(string queue)
+        public async Task<IQueueMessage> GetMessageOrDefaultAsync(string queue)
         {
             var request = ApiHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages");
             var response = await WebRequest.SendAsync(request);
