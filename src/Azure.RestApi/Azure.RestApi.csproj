@@ -18,8 +18,11 @@
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Fixed a bug preventing put of blob</PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <PackageReleaseNotes>Functions returning default(object) when no item is found is renamed to WhateverOrDefault() to follow MS style
+Bug fix: Pop Message in Queue threw an error when fetching without anything on the queue</PackageReleaseNotes>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
