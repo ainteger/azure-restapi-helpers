@@ -17,7 +17,7 @@ namespace Azure.RestApi
             WebRequest = webRequest;
         }
 
-        public async Task<Entity> GetRowAsync<Entity>(string table, string partitionKey, string rowKey)
+        public async Task<Entity> GetRowOrDefaultAsync<Entity>(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
             var response = await WebRequest.SendAsync(request);
