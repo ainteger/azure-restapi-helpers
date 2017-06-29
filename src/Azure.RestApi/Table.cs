@@ -1,5 +1,7 @@
 ﻿using Azure.RestApi.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ namespace Azure.RestApi
 
         public async Task<bool> CreateTableAsync(string tableName)
         {
-            var requestModel = new CreateTableMessage { TableName = tableName };
+            var requestModel = new CreateTableRequest { TableName = tableName };
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
             var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
