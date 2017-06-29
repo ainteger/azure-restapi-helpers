@@ -16,7 +16,11 @@ Project can be found as nuget package at https://www.nuget.org/packages/Ainteger
 
 To install Azure Restapi helpers, run the following command in the Package Manager Console
 
-	PM> Install-Package Ainteger.Azure.RestApi in 
+	PM> Install-Package Ainteger.Azure.RestApi
+	
+To update Azure Restapi helpers, run the following command in the Package Manager Console
+	
+	PM> Update-Package Ainteger.Azure.RestApi
 
 ## Sample code
 
