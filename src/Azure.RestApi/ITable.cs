@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
     public interface ITable
     {
+        Task<bool> CreateTableAsync(string tableName);
+        Task<bool> DeleteTableAsync(string tableName);
+        Task<IEnumerable<string>> ListTables();
         Task<Entity> GetRowOrDefaultAsync<Entity>(string table, string partitionKey, string rowKey);
         Task<bool> CreateRowAsync<Entity>(string table, Entity entity);
         Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey);
