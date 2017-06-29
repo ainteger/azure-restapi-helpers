@@ -32,6 +32,25 @@ namespace Azure.RestApi
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<IEnumerable<string>> ListTables()
+        {
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"Tables");
+            var response = await WebRequest.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<GetTablesResponse>(json);
+
+                if (data != null)
+                {
+                    return data.Value.Select(table => table.TableName);
+                }
+            }
+
+            return default(IEnumerable<string>);
+        }
+
         public async Task<Entity> GetRowOrDefaultAsync<Entity>(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
