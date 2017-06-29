@@ -17,6 +17,21 @@ namespace Azure.RestApi
             WebRequest = webRequest;
         }
 
+        public async Task<bool> CreateTableAsync(string tableName)
+        {
+            var requestModel = new CreateTableMessage { TableName = tableName };
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
+            var response = await WebRequest.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteTableAsync(string tableName)
+        {
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"Tables('{tableName}')");
+            var response = await WebRequest.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<Entity> GetRowOrDefaultAsync<Entity>(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
