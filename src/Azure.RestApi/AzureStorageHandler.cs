@@ -32,7 +32,7 @@ namespace Azure.RestApi
                 request.Headers.Add("x-ms-version", "2016-05-31");
                 request.Headers.Add("DataServiceVersion", "3.0;NetFx");
                 request.Headers.Add("MaxDataServiceVersion", "3.0;NetFx");
-                request.Headers.Add("Accept", "application/json");
+                request.Headers.Add("Accept", "application/json;odata=nometadata");
             }
             else
             {
