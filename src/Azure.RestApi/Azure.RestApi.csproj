@@ -18,11 +18,16 @@
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Functions returning default(object) when no item is found is renamed to WhateverOrDefault() to follow MS style
-Bug fix: Pop Message in Queue threw an error when fetching without anything on the queue</PackageReleaseNotes>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <PackageReleaseNotes>Breaking changes: 
+Removing json parsing of entity for get table row and create table row
+
+Added methods
+get multiple table rows by filtering
+create table
+delete table</PackageReleaseNotes>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
