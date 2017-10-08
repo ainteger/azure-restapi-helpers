@@ -43,7 +43,6 @@ namespace Azure.RestApi
             {
                 var json = await response.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<GetTablesResponse>(json);
-
                 if (data != null)
                 {
                     return data.Value.Select(table => table.TableName);
@@ -53,24 +52,40 @@ namespace Azure.RestApi
             return default(IEnumerable<string>);
         }
 
-        public async Task<Entity> GetRowOrDefaultAsync<Entity>(string table, string partitionKey, string rowKey)
+        public async Task<string> GetRowsAsync(string table, string filter = null)
+        {
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filter = $"?$filter={GetEncodedFilter(filter)}";
+            }
+
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(){filter}");
+            var response = await WebRequest.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+
+            return default(string);
+        }
+
+        public async Task<string> GetRowOrDefaultAsync(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
             var response = await WebRequest.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Entity>(json);
+                return await response.Content.ReadAsStringAsync();
             }
 
-            return default(Entity);
+            return default(string);
         }
 
-        public async Task<bool> CreateRowAsync<Entity>(string table, Entity entity)
+        public async Task<bool> CreateRowAsync(string table, string entityJson)
         {
-            var json = JsonConvert.SerializeObject(entity);
-            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(json));
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(entityJson));
             var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
         }
@@ -80,6 +95,22 @@ namespace Azure.RestApi
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
             var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
+        }
+
+        private string GetEncodedFilter(string filter)
+        {
+            return filter
+                .Replace(" ", "%20")
+                .Replace("'", "''")
+                .Replace("/", "%2F")
+                .Replace("?", "%3F")
+                .Replace(":", "%3A")
+                .Replace("@", "%40")
+                .Replace("&", "%26")
+                .Replace("=", "%3D")
+                .Replace("+", "%2B")
+                .Replace(",", "%2C")
+                .Replace("$", "%24");
         }
     }
 }
