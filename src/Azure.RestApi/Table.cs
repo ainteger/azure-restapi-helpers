@@ -56,7 +56,7 @@ namespace Azure.RestApi
         {
             if (!string.IsNullOrEmpty(filter))
             {
-                filter = $"?$filter={GetEncodedFilter(filter)}";
+                filter = $"?$filter={filter}";
             }
 
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(){filter}");
@@ -97,9 +97,9 @@ namespace Azure.RestApi
             return response.IsSuccessStatusCode;
         }
 
-        private string GetEncodedFilter(string filter)
+        public string GetEncodedFilterPropertyValue(string filterPropertyValue)
         {
-            return filter
+            return filterPropertyValue
                 .Replace(" ", "%20")
                 .Replace("'", "''")
                 .Replace("/", "%2F")

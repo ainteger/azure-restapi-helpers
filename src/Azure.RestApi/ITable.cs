@@ -12,5 +12,6 @@ namespace Azure.RestApi
         Task<string> GetRowsAsync(string table, string filter = null);
         Task<bool> CreateRowAsync(string table, string entityJson);
         Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey);
+        string GetEncodedFilterPropertyValue(string filterPropertyValue);
     }
 }
