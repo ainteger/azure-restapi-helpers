@@ -18,16 +18,12 @@
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Breaking changes: 
-Removing json parsing of entity for get table row and create table row
+    <PackageReleaseNotes>Critical bug fix: Removed auto-encoding for filter in Table.GetRowsAsync which prevented use of filter. (sorry)
 
-Added methods
-get multiple table rows by filtering
-create table
-delete table</PackageReleaseNotes>
-    <Version>1.2.0</Version>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
+Added method for encoding property value. Not valid to use on whole filter query</PackageReleaseNotes>
+    <Version>1.2.1</Version>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <FileVersion>1.2.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
