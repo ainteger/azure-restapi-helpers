@@ -90,6 +90,13 @@ namespace Azure.RestApi
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<bool> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson)
+        {
+            var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), "*");
+            var response = await WebRequest.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey)
         {
             var request = ApiHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
