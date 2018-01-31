@@ -16,14 +16,13 @@
     <RepositoryUrl>https://github.com/ainteger/azure-restapi-helpers</RepositoryUrl>
     <Description>Help functions for Azure rest api.</Description>
     <Authors>Andreas Litzell Ivarsson</Authors>
-    <Copyright>Copyright (c) 2017 Andreas Litzell Ivarsson</Copyright>
+    <Copyright>Copyright (c) 2017-2018 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Critical bug fix: Removed auto-encoding for filter in Table.GetRowsAsync which prevented use of filter. (sorry)
-
-Added method for encoding property value. Not valid to use on whole filter query</PackageReleaseNotes>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <PackageReleaseNotes>Added IBlob.ListBlobsAsync
+Added ITable.UpdateRowAsync</PackageReleaseNotes>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
