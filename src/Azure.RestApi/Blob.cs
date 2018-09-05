@@ -20,6 +20,11 @@ namespace Azure.RestApi
 
         public async Task<bool> PutBlobAsync(string container, string contentName, byte[] content)
         {
+            if (contentName.StartsWith("/")) 
+            {
+                contentName = contentName.Substring(1);
+            }
+
             var request = ApiHandler.GetRequest(StorageType.Blob, HttpMethod.Put, $"{container}/{contentName}", content);
             var response = await WebRequest.SendAsync(request);
             return response.IsSuccessStatusCode;
