@@ -27,25 +27,21 @@ namespace Azure.RestApi
 
             request.Headers.Add("x-ms-date", now.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
 
+            request.Headers.Add("x-ms-version", "2018-03-28");
+
             if (storageType == StorageType.Table)
             {
-                request.Headers.Add("x-ms-version", "2016-05-31");
                 request.Headers.Add("DataServiceVersion", "3.0;NetFx");
                 request.Headers.Add("MaxDataServiceVersion", "3.0;NetFx");
                 request.Headers.Add("Accept", "application/json;odata=nometadata");
             }
-            else
+            else if (storageType == StorageType.Blob)
             {
-                request.Headers.Add("x-ms-version", "2009-09-19");
-
-                if (storageType == StorageType.Blob)
-                {
-                    request.Headers.Add("x-ms-blob-type", "BlockBlob");
-                }
+                request.Headers.Add("x-ms-blob-type", "BlockBlob");
             }
 
             if (requestBody != null)
-            {                
+            {
                 request.Content = new ByteArrayContent(requestBody);
                 request.Content.Headers.Add("Content-Length", requestBody.Length.ToString());
 
@@ -53,7 +49,7 @@ namespace Azure.RestApi
                 {
                     request.Content.Headers.Add("Content-Type", "application/json;odata=nometadata");
                 }
-                
+
                 if (storageType != StorageType.Blob)
                 {
                     request.Headers.Add("Accept-Charset", "UTF-8");
