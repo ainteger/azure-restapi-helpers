@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using Xunit;
+using NSubstitute;
 
 namespace Azure.RestApi.Tests
 {
@@ -18,11 +19,12 @@ namespace Azure.RestApi.Tests
             //Given
             var expected = "/testaccount/";
 
+
             //When
             var actual = GetHandler().GetCanonicalizedResource(StorageType.Queue, FakeData.GetBaseUrl(FakeData.QUEUE), FakeData.ACCOUNTNAME);
 
             //Then
-            Assert.Equal(expected, actual);
+            actual.Equals(expected);            
         }
 
         [Fact]
