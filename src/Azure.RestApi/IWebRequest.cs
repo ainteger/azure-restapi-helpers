@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
-    public interface IWebRequest
-    {
-        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
-    }
+	public interface IWebRequest
+	{
+		Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
+	}
 }

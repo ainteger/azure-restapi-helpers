@@ -1,21 +1,15 @@
-using Azure.RestApi.Models;
-using System;
-using System.Net.Http;
-using Xunit;
 using NSubstitute;
-using System.Threading.Tasks;
-using System.Net;
-using System.Text;
+using Xunit;
 
 namespace Azure.RestApi.Tests
 {
-    public class TableTests
+	public class TableHandlerTests
     {
         [Fact]
         public void GivenStrangeString_WhenFiltering_ThenStringIsEncoded()
         {
             //Given            
-            var servant = new Table(Substitute.For<IAzureStorageHandler>(), Substitute.For<IWebRequest>());
+            var servant = new TableHandler(Substitute.For<IAzureStorageHandler>(), Substitute.For<IWebRequest>());
             var content = "test string '/?:@&=+,$ end test";
 
             //When

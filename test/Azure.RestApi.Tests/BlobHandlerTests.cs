@@ -1,15 +1,14 @@
 using Azure.RestApi.Models;
-using System;
-using System.Net.Http;
-using Xunit;
 using NSubstitute;
-using System.Threading.Tasks;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Azure.RestApi.Tests
 {
-    public class BlobTests
+	public class BlobHandlerTests
     {
         [Fact]
         public async Task GivenCorrectDataExist_WhenPutBlobWithData_ThenResultIsSuccess()
@@ -24,7 +23,7 @@ namespace Azure.RestApi.Tests
             apiHandler.GetRequest(Arg.Is(StorageType.Blob), Arg.Is(HttpMethod.Put), Arg.Any<string>(), Arg.Any<byte[]>()).Returns(
                 x => { return new HttpRequestMessage(); }
             );
-            var servant = new Blob(apiHandler, webRequest);
+            var servant = new BlobHandler(apiHandler, webRequest);
             var content = Encoding.UTF8.GetBytes("arandomstring");
 
             //When

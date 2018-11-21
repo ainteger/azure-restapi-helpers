@@ -2,9 +2,9 @@
 
 namespace Azure.RestApi.Models
 {
-    public class CreateTableRequest
-    {
-        [JsonProperty("TableName")]
-        public string TableName { get; set; }
-    }
+	public class CreateTableRequest
+	{
+		[JsonProperty("TableName")]
+		public string TableName { get; set; }
+	}
 }
