@@ -16,8 +16,10 @@
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017-2018 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Added IBlob.ListBlobsAsync
-Added ITable.UpdateRowAsync</PackageReleaseNotes>
+    <PackageReleaseNotes>Update to netstandard2.0
+Now using IOptions for settings
+Adding extensions for registration with default to singleton
+Renaming handlers</PackageReleaseNotes>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
