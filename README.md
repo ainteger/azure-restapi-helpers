@@ -24,14 +24,15 @@ To update Azure Restapi helpers, run the following command in the Package Manage
 
 ## Sample code
 
-The code is really simple to use with IoC and this is an example of how to configurate
+The code is really simple to use with IoC and this is an example of how to configurate. 
+
+### Startup.cs
 
 	public void ConfigureServices(IServiceCollection services)
 	{
-		services.AddSingleton(typeof(StorageAuthentication), new StorageAuthentication { AccountName = "StorageAccountName", StorageKey = "StorageKey" });
-		services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
-		services.AddScoped<IWebRequest, WebRequest>();
-		services.AddScoped<ITable, Table>();
-		services.AddScoped<IQueue, Queue>();
-		services.AddScoped<IBlob, Blob>();
+		services.AddAzureRestApi(options => { options.StorageAccountName = ""; options.StorageKey = ""; });	
 	}
+
+### Controller
+
+Inject IBlobHandler, IQueueHandler or ITableHandler in the current constructor and it will make the request for you

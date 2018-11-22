@@ -1,13 +1,12 @@
 ﻿using Azure.RestApi;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 
-namespace Microsoft.Extensions.Logging
+namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class AzureRestApiFactoryExtensions
 	{
-		public static IServiceCollection AddAzureRestApi(this IServiceCollection services, Action<AzureRestApiOptions> configure)
+		public static IServiceCollection AddAzureRestApi(this IServiceCollection services,  Action<AzureRestApiOptions> configure)
 		{
 			if (configure == null)
 			{
