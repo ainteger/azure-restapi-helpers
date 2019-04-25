@@ -90,9 +90,11 @@ namespace Azure.RestApi
 			return response.IsSuccessStatusCode;
 		}
 
-		public async Task<bool> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson)
+		public async Task<bool> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson, bool upsert = false)
 		{
-			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), "*");
+			var ifMatch = !upsert ? "*" : string.Empty;
+
+			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), ifMatch);
 			var response = await WebRequest.SendAsync(request);
 			return response.IsSuccessStatusCode;
 		}
