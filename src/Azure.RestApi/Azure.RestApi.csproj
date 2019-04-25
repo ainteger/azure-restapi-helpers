@@ -14,15 +14,12 @@
     <RepositoryUrl>https://github.com/ainteger/azure-restapi-helpers</RepositoryUrl>
     <Description>Help functions for Azure rest api.</Description>
     <Authors>Andreas Litzell Ivarsson</Authors>
-    <Copyright>Copyright (c) 2017-2018 Andreas Litzell Ivarsson</Copyright>
+    <Copyright>Copyright (c) 2017-2019 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi</PackageTags>
-    <PackageReleaseNotes>Update to netstandard2.0
-Now using IOptions for settings
-Adding extensions for registration with default to singleton
-Renaming handlers</PackageReleaseNotes>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <PackageReleaseNotes>Adding upsert for table</PackageReleaseNotes>
+    <Version>2.1.0</Version>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
