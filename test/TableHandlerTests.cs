@@ -10,7 +10,7 @@ namespace Azure.RestApi.Tests
 		public void GivenStrangeString_WhenFiltering_ThenStringIsEncoded()
 		{
 			//Given            
-			var servant = new AzureTableClient(Substitute.For<IAzureStorageHandler>(), Substitute.For<HttpClient>());
+			var servant = new AzureTableClient(Substitute.For<IAzureStorageHandler>(), Substitute.For<IHttpClientFactory>());
 			var content = "test string '/?:@&=+,$ end test";
 
 			//When

@@ -12,19 +12,10 @@ using Newtonsoft.Json;
 
 namespace Azure.RestApi.Tests
 {
-	public class Container : HttpMessageHandler, IContainer
-	{
-		protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-		{
-			return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
-		}
-	}
-	public interface IContainer { }
-
-	public class BlobHandlerTests
+	public class Given_blob
 	{
 		[Fact]
-		public async Task GivenCorrectDataExist_WhenPutBlobWithData_ThenResultIsSuccess()
+		public async Task when_put_blob_request_then_response_should_be_ok()
 		{
 			//Given
 			var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
