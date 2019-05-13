@@ -7,18 +7,18 @@ using System.Xml.Linq;
 
 namespace Azure.RestApi
 {
-	public class BlobHandler : IBlobHandler
+	public class AzureBlobClient : IAzureBlobClient
 	{
 		private IAzureStorageHandler AzureStorageHandler { get; }
-		private IWebRequest WebRequest { get; }
+		private IHttpClientFactory HttpFactory { get; }
 
-		public BlobHandler(IAzureStorageHandler azureStorageHandler, IWebRequest webRequest)
+		public AzureBlobClient(IAzureStorageHandler azureStorageHandler, IHttpClientFactory httpFactory)
 		{
 			AzureStorageHandler = azureStorageHandler;
-			WebRequest = webRequest;
+			HttpFactory = httpFactory;
 		}
 
-		public async Task<bool> PutBlobAsync(string container, string contentName, byte[] content)
+		public async Task<AzureResponse> PutBlobAsync(string container, string contentName, byte[] content)
 		{
 			if (contentName.StartsWith("/"))
 			{
@@ -26,14 +26,14 @@ namespace Azure.RestApi
 			}
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Put, $"{container}/{contentName}", content);
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await GetClient().SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
 		public async Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}/{contentName}");
-			var response = await WebRequest.SendAsync(request);
+			var response = await GetClient().SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -43,17 +43,17 @@ namespace Azure.RestApi
 			return default(byte[]);
 		}
 
-		public async Task<bool> DeleteBlobAsync(string container, string contentName)
+		public async Task<AzureResponse> DeleteBlobAsync(string container, string contentName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Delete, $"{container}/{contentName}");
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await GetClient().SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
 		public async Task<IEnumerable<IBlobData>> ListBlobsAsync(string container)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}?restype=container&comp=list");
-			var response = await WebRequest.SendAsync(request);
+			var response = await GetClient().SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -71,6 +71,11 @@ namespace Azure.RestApi
 			}
 
 			return default(IEnumerable<IBlobData>);
+		}
+
+		private HttpClient GetClient()
+		{
+			return HttpFactory.CreateClient();
 		}
 	}
 }

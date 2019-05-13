@@ -9,21 +9,21 @@ using System.Xml.Linq;
 
 namespace Azure.RestApi
 {
-	public class QueueHandler : IQueueHandler
+	public class AzureQueueClient : IAzureQueueClient
 	{
 		private IAzureStorageHandler AzureStorageHandler { get; }
-		private IWebRequest WebRequest { get; }
+		private HttpClient Client { get; }
 
-		public QueueHandler(IAzureStorageHandler azureStorageHandler, IWebRequest webRequest)
+		public AzureQueueClient(IAzureStorageHandler azureStorageHandler, HttpClient client)
 		{
 			AzureStorageHandler = azureStorageHandler;
-			WebRequest = webRequest;
+			Client = client;
 		}
 
 		public async Task<IEnumerable<string>> ListQueuesAsync()
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, "?comp=list");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -36,35 +36,35 @@ namespace Azure.RestApi
 			return Enumerable.Empty<string>();
 		}
 
-		public async Task<bool> PutMessageAsync(string queue, string messageBody)
+		public async Task<AzureResponse> PutMessageAsync(string queue, string messageBody)
 		{
 			var messageBodyBytes = new UTF8Encoding().GetBytes(messageBody);
 			var messageBodyBase64 = Convert.ToBase64String(messageBodyBytes);
 			var message = $"<QueueMessage><MessageText>{messageBodyBase64}</MessageText></QueueMessage>";
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Post, $"{queue}/messages", Encoding.UTF8.GetBytes(message), null);
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> CreateQueueAsync(string queue)
+		public async Task<AzureResponse> CreateQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Put, queue);
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> DeleteQueueAsync(string queue)
+		public async Task<AzureResponse> DeleteQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue);
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
 		public async Task<string> PeekMessageOrDefaultAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages?peekonly=true");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -91,7 +91,7 @@ namespace Azure.RestApi
 		public async Task<IQueueMessage> GetMessageOrDefaultAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -118,18 +118,18 @@ namespace Azure.RestApi
 			return default(QueueMessage);
 		}
 
-		public async Task<bool> DeleteMessageAsync(string queue, Guid messageId, string popReceipt)
+		public async Task<AzureResponse> DeleteMessageAsync(string queue, Guid messageId, string popReceipt)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages/{messageId}?popreceipt={Uri.EscapeDataString(popReceipt)}");
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> ClearMessagesAsync(string queue)
+		public async Task<AzureResponse> ClearMessagesAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages");
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 	}
 }

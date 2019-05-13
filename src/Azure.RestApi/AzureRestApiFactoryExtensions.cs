@@ -1,12 +1,12 @@
 ﻿using Azure.RestApi;
 using System;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class AzureRestApiFactoryExtensions
 	{
-		public static IServiceCollection AddAzureRestApi(this IServiceCollection services,  Action<AzureRestApiOptions> configure)
+		public static IServiceCollection AddAzureRestApi(this IServiceCollection services, Action<AzureRestApiOptions> configure)
 		{
 			if (configure == null)
 			{
@@ -14,10 +14,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			}
 
 			services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
-			services.AddSingleton<IBlobHandler, BlobHandler>();
-			services.AddSingleton<IQueueHandler, QueueHandler>();
-			services.AddSingleton<ITableHandler, TableHandler>();
-			services.AddSingleton<IWebRequest, WebRequest>();
+			
+			services.AddHttpClient<IAzureTableClient, AzureTableClient>();
+			services.AddHttpClient<IAzureBlobClient, AzureBlobClient>();
+			services.AddHttpClient<IAzureQueueClient, AzureQueueClient>();
 
 			services.Configure(configure);
 

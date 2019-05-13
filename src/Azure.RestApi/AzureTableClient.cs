@@ -2,42 +2,43 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Azure.RestApi
 {
-	public class TableHandler : ITableHandler
+	public class AzureTableClient : IAzureTableClient
 	{
 		private IAzureStorageHandler AzureStorageHandler { get; }
-		private IWebRequest WebRequest { get; }
+		private HttpClient Client { get; }
 
-		public TableHandler(IAzureStorageHandler azureStorageHandler, IWebRequest webRequest)
+		public AzureTableClient(IAzureStorageHandler azureStorageHandler, HttpClient client)
 		{
 			AzureStorageHandler = azureStorageHandler;
-			WebRequest = webRequest;
+			Client = client;
 		}
 
-		public async Task<bool> CreateTableAsync(string tableName)
+		public async Task<AzureResponse> CreateTableAsync(string tableName)
 		{
 			var requestModel = new CreateTableRequest { TableName = tableName };
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> DeleteTableAsync(string tableName)
+		public async Task<AzureResponse> DeleteTableAsync(string tableName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"Tables('{tableName}')");
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<IEnumerable<string>> ListTables()
+		public async Task<IEnumerable<string>> ListTablesAsync()
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"Tables");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -60,7 +61,7 @@ namespace Azure.RestApi
 			}
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(){filter}");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -73,7 +74,7 @@ namespace Azure.RestApi
 		public async Task<string> GetRowOrDefaultAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
-			var response = await WebRequest.SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -83,27 +84,27 @@ namespace Azure.RestApi
 			return default(string);
 		}
 
-		public async Task<bool> CreateRowAsync(string table, string entityJson)
+		public async Task<AzureResponse> CreateRowAsync(string table, string entityJson)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(entityJson));
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson, bool upsert = false)
+		public async Task<AzureResponse> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson, bool upsert = false)
 		{
 			var ifMatch = !upsert ? "*" : string.Empty;
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), ifMatch);
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
-		public async Task<bool> DeleteRowAsync(string table, string partitionKey, string rowKey)
+		public async Task<AzureResponse> DeleteRowAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
-			var response = await WebRequest.SendAsync(request);
-			return response.IsSuccessStatusCode;
+			var response = await Client.SendAsync(request);
+			return AzureResponse.Parse(response);
 		}
 
 		public string GetEncodedFilterPropertyValue(string filterPropertyValue)
