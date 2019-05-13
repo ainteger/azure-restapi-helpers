@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
 				throw new ArgumentNullException(nameof(configure));
 			}
 
-			services.AddSingleton<IAzureStorageHandler, AzureStorageHandler>();
+			services.AddTransient<IAzureStorageHandler, AzureStorageHandler>();
 			
 			services.AddHttpClient<IAzureTableClient, AzureTableClient>();
 			services.AddHttpClient<IAzureBlobClient, AzureBlobClient>();
