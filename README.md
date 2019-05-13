@@ -14,13 +14,9 @@ The repository is built as NetStandard and by that possible to use both in Asp.N
 
 Project can be found as nuget package at https://www.nuget.org/packages/Ainteger.Azure.RestApi/
 
-To install Azure Restapi helpers, run the following command in the Package Manager Console
+To install Azure Restapi helpers, run the following command
 
-	PM> Install-Package Ainteger.Azure.RestApi
-	
-To update Azure Restapi helpers, run the following command in the Package Manager Console
-	
-	PM> Update-Package Ainteger.Azure.RestApi
+	PM> dotnet add package Ainteger.Azure.RestApi --version 2.1.0
 
 ## Sample code
 
@@ -35,4 +31,4 @@ The code is really simple to use with IoC and this is an example of how to confi
 
 ### Controller
 
-Inject IBlobHandler, IQueueHandler or ITableHandler in the current constructor and it will make the request for you
+Inject IAzureBlobClient, IAzureQueueClient or IAzureTableClient in the current constructor and it will make the request for you.
