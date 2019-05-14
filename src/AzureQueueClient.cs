@@ -44,21 +44,21 @@ namespace Azure.RestApi
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Post, $"{queue}/messages", Encoding.UTF8.GetBytes(message), null);
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> CreateQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Put, queue);
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue);
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<string> PeekMessageOrDefaultAsync(string queue)
@@ -122,14 +122,14 @@ namespace Azure.RestApi
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages/{messageId}?popreceipt={Uri.EscapeDataString(popReceipt)}");
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> ClearMessagesAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages");
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		private HttpClient GetClient()

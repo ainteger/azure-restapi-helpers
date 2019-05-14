@@ -25,14 +25,14 @@ namespace Azure.RestApi
 			var requestModel = new CreateTableRequest { TableName = tableName };
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteTableAsync(string tableName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"Tables('{tableName}')");
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<IEnumerable<string>> ListTablesAsync()
@@ -88,7 +88,7 @@ namespace Azure.RestApi
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(entityJson));
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> UpdateRowAsync(string table, string partitionKey, string rowKey, string entityJson, bool upsert = false)
@@ -97,14 +97,14 @@ namespace Azure.RestApi
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), ifMatch);
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteRowAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public string GetEncodedFilterPropertyValue(string filterPropertyValue)

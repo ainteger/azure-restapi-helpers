@@ -27,7 +27,7 @@ namespace Azure.RestApi
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Put, $"{container}/{contentName}", content);
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName)
@@ -47,7 +47,7 @@ namespace Azure.RestApi
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Delete, $"{container}/{contentName}");
 			var response = await GetClient().SendAsync(request);
-			return AzureResponse.Parse(response);
+			return new AzureResponse(response);
 		}
 
 		public async Task<IEnumerable<IBlobData>> ListBlobsAsync(string container)
