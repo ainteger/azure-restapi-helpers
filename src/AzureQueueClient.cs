@@ -12,18 +12,18 @@ namespace Azure.RestApi
 	public class AzureQueueClient : IAzureQueueClient
 	{
 		private IAzureStorageHandler AzureStorageHandler { get; }
-		private IHttpClientFactory HttpFactory { get; }
+		private HttpClient Client { get; }
 
-		public AzureQueueClient(IAzureStorageHandler azureStorageHandler, IHttpClientFactory httpFactory)
+		public AzureQueueClient(IAzureStorageHandler azureStorageHandler, HttpClient client)
 		{
 			AzureStorageHandler = azureStorageHandler;
-			HttpFactory = httpFactory;
+			Client = client;
 		}
 
 		public async Task<IEnumerable<string>> ListQueuesAsync()
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, "?comp=list");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -43,28 +43,28 @@ namespace Azure.RestApi
 			var message = $"<QueueMessage><MessageText>{messageBodyBase64}</MessageText></QueueMessage>";
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Post, $"{queue}/messages", Encoding.UTF8.GetBytes(message), null);
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> CreateQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Put, queue);
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteQueueAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, queue);
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<string> PeekMessageOrDefaultAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages?peekonly=true");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -91,7 +91,7 @@ namespace Azure.RestApi
 		public async Task<IQueueMessage> GetMessageOrDefaultAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Get, $"{queue}/messages");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -121,14 +121,14 @@ namespace Azure.RestApi
 		public async Task<AzureResponse> DeleteMessageAsync(string queue, Guid messageId, string popReceipt)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages/{messageId}?popreceipt={Uri.EscapeDataString(popReceipt)}");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> ClearMessagesAsync(string queue)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Queue, HttpMethod.Delete, $"{queue}/messages");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 	}

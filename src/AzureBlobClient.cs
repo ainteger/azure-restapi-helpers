@@ -10,12 +10,12 @@ namespace Azure.RestApi
 	public class AzureBlobClient : IAzureBlobClient
 	{
 		private IAzureStorageHandler AzureStorageHandler { get; }
-		private IHttpClientFactory HttpFactory { get; }
+		private HttpClient Client { get; }
 
-		public AzureBlobClient(IAzureStorageHandler azureStorageHandler, IHttpClientFactory httpFactory)
+		public AzureBlobClient(IAzureStorageHandler azureStorageHandler, HttpClient client)
 		{
 			AzureStorageHandler = azureStorageHandler;
-			HttpFactory = httpFactory;
+			Client = client;
 		}
 
 		public async Task<AzureResponse> PutBlobAsync(string container, string contentName, byte[] content)
@@ -26,14 +26,14 @@ namespace Azure.RestApi
 			}
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Put, $"{container}/{contentName}", content);
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}/{contentName}");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -46,14 +46,14 @@ namespace Azure.RestApi
 		public async Task<AzureResponse> DeleteBlobAsync(string container, string contentName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Delete, $"{container}/{contentName}");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<IEnumerable<IBlobData>> ListBlobsAsync(string container)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}?restype=container&comp=list");
-			var response = await HttpFactory.CreateClient().SendAsync(request);
+			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{

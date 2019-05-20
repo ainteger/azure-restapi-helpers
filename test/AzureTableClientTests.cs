@@ -20,18 +20,17 @@ namespace Azure.RestApi.Tests
 			//Given
 			var fakeValue = "{\"value\":[{\"PartitionKey\":\"1\", \"RowKey\": \"A\", \"Value\": 4},{\"PartitionKey\":\"2\", \"RowKey\": \"B\", \"Value\": 4}]}";
 
-			var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 			var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
 			{
 				Content = new StringContent(fakeValue, Encoding.UTF8, "application/json")
 			});
-			httpClientFactoryMock.CreateClient().Returns(new HttpClient(fakeHttpMessageHandler));
+			var httpClient = new HttpClient(fakeHttpMessageHandler);
 
 			var apiHandler = Substitute.For<IAzureStorageHandler>();
 			apiHandler.GetRequest(Arg.Is(StorageType.Table), Arg.Is(HttpMethod.Get), "faketable()").Returns(
 					x => { return new HttpRequestMessage(HttpMethod.Get, "http://www.justafake.com/faketable()"); }
 			);
-			var servant = new AzureTableClient(apiHandler, httpClientFactoryMock);
+			var servant = new AzureTableClient(apiHandler, httpClient);
 
 			//When
 			var result = await servant.GetRowsAsync("faketable");
@@ -46,18 +45,17 @@ namespace Azure.RestApi.Tests
 			//Given
 			var fakeValue = "{\"value\":[{\"PartitionKey\":\"1\", \"RowKey\": \"A\", \"Value\": 4},{\"PartitionKey\":\"2\", \"RowKey\": \"B\", \"Value\": 4}]}";
 
-			var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 			var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
 			{
 				Content = new StringContent(fakeValue, Encoding.UTF8, "application/json")
 			});
-			httpClientFactoryMock.CreateClient().Returns(new HttpClient(fakeHttpMessageHandler));
+			var httpClient = new HttpClient(fakeHttpMessageHandler);
 
 			var apiHandler = Substitute.For<IAzureStorageHandler>();
 			apiHandler.GetRequest(Arg.Is(StorageType.Table), Arg.Is(HttpMethod.Get), "faketable()?$filter=PartitionKey eq 'A'").Returns(
 					x => { return new HttpRequestMessage(HttpMethod.Get, "http://www.justafake.com/faketable()"); }
 			);
-			var servant = new AzureTableClient(apiHandler, httpClientFactoryMock);
+			var servant = new AzureTableClient(apiHandler, httpClient);
 
 			//When
 			var result = await servant.GetRowsAsync("faketable", "PartitionKey eq 'A'");
@@ -73,7 +71,10 @@ namespace Azure.RestApi.Tests
 		public void when_filtering_then_string_is_encoded_for_request()
 		{
 			//Given            
-			var servant = new AzureTableClient(Substitute.For<IAzureStorageHandler>(), Substitute.For<IHttpClientFactory>());
+			var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.NotImplemented));
+			var httpClient = new HttpClient(fakeHttpMessageHandler);
+
+			var servant = new AzureTableClient(Substitute.For<IAzureStorageHandler>(), httpClient);
 			var content = "test string '/?:@&=+,$ end test";
 
 			//When

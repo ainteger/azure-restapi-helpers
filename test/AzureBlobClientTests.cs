@@ -18,15 +18,15 @@ namespace Azure.RestApi.Tests
 		public async Task when_put_blob_request_then_response_should_be_ok()
 		{
 			//Given
-			var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
+
 			var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK));
-			httpClientFactoryMock.CreateClient().Returns(new HttpClient(fakeHttpMessageHandler));
+			var httpClient = new HttpClient(fakeHttpMessageHandler);
 
 			var apiHandler = Substitute.For<IAzureStorageHandler>();
 			apiHandler.GetRequest(Arg.Is(StorageType.Blob), Arg.Is(HttpMethod.Put), Arg.Any<string>(), Arg.Any<byte[]>()).Returns(
 					x => { return new HttpRequestMessage(HttpMethod.Put, "http://www.justafake.com/something"); }
 			);
-			var servant = new AzureBlobClient(apiHandler, httpClientFactoryMock);
+			var servant = new AzureBlobClient(apiHandler, httpClient);
 			var content = Encoding.UTF8.GetBytes("arandomstring");
 
 			//When
