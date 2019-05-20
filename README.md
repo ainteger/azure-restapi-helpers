@@ -6,7 +6,7 @@ This repository is inspired by https://github.com/cmfaustino/PROMPT11-10-Cloud-C
 
 The repository will be updated with more methods when I need them, please feel free to create pull requests with missing parts.
 
-The repository is built as NetStandard and by that possible to use both in Asp.Net Core and older NET Framework.
+The repository is built as NetStandard2.0
 
 ~ forever 
 
@@ -16,7 +16,7 @@ Project can be found as nuget package at https://www.nuget.org/packages/Ainteger
 
 To install Azure Restapi helpers, run the following command
 
-	PM> dotnet add package Ainteger.Azure.RestApi --version 2.1.0
+	PM> dotnet add package Ainteger.Azure.RestApi 
 
 ## Sample code
 
@@ -28,6 +28,8 @@ The code is really simple to use with IoC and this is an example of how to confi
 	{
 		services.AddAzureRestApi(options => { options.StorageAccountName = ""; options.StorageKey = ""; });	
 	}
+
+This will inject the three helpers as HttpClients and will take care of HttpClients reuse, so no need for singleton to avoid socket expections.
 
 ### Controller
 
