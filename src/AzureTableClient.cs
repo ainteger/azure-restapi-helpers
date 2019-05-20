@@ -24,21 +24,21 @@ namespace Azure.RestApi
 		{
 			var requestModel = new CreateTableRequest { TableName = tableName };
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteTableAsync(string tableName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"Tables('{tableName}')");
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<IEnumerable<string>> ListTablesAsync()
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"Tables");
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -61,7 +61,7 @@ namespace Azure.RestApi
 			}
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(){filter}");
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -74,7 +74,7 @@ namespace Azure.RestApi
 		public async Task<string> GetRowOrDefaultAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -87,7 +87,7 @@ namespace Azure.RestApi
 		public async Task<AzureResponse> CreateRowAsync(string table, string entityJson)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, table, Encoding.UTF8.GetBytes(entityJson));
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 			return new AzureResponse(response);
 		}
 
@@ -96,14 +96,14 @@ namespace Azure.RestApi
 			var ifMatch = !upsert ? "*" : string.Empty;
 
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Put, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", Encoding.UTF8.GetBytes(entityJson), ifMatch);
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 			return new AzureResponse(response);
 		}
 
 		public async Task<AzureResponse> DeleteRowAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Delete, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')", ifMatch: "*");
-			var response = await GetClient().SendAsync(request);
+			var response = await HttpFactory.CreateClient().SendAsync(request);
 			return new AzureResponse(response);
 		}
 
@@ -121,11 +121,6 @@ namespace Azure.RestApi
 				.Replace("+", "%2B")
 				.Replace(",", "%2C")
 				.Replace("$", "%24");
-		}
-
-		private HttpClient GetClient()
-		{
-			return HttpFactory.CreateClient();
 		}
 	}
 }

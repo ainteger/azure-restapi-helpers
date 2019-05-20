@@ -32,3 +32,7 @@ The code is really simple to use with IoC and this is an example of how to confi
 ### Controller
 
 Inject IAzureBlobClient, IAzureQueueClient or IAzureTableClient in the current constructor and it will make the request for you.
+
+## How to build
+	PM> cd src
+	PM> dotnet build -c Release 
