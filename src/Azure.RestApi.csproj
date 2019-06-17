@@ -12,14 +12,14 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ainteger/azure-restapi-helpers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ainteger/azure-restapi-helpers</RepositoryUrl>
-    <Description>Help functions for Azure rest api.</Description>
+    <Description>Help functions for Azure rest api using IHttpClientFactory injection.</Description>
     <Authors>Andreas Litzell Ivarsson</Authors>
     <Copyright>Copyright (c) 2017-2019 Andreas Litzell Ivarsson</Copyright>
     <PackageTags>azure storage restapi table queue blob</PackageTags>
-    <PackageReleaseNotes>Handlers are now HttpClients instead</PackageReleaseNotes>
-    <Version>3.0.0</Version>
-    <AssemblyVersion>3.0.0</AssemblyVersion>
-    <FileVersion>3.0.0</FileVersion>
+    <PackageReleaseNotes>Bug fix: Url has been removed from listing blob</PackageReleaseNotes>
+    <Version>3.0.1</Version>
+    <AssemblyVersion>3.0.1</AssemblyVersion>
+    <FileVersion>3.0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
