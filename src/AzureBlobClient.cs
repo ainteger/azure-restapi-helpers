@@ -63,8 +63,7 @@ namespace Azure.RestApi
 
 				return xml.Element("Blobs").Elements("Blob").Select(b => new BlobData
 				{
-					Name = b.Element("Name").Value,
-					Url = b.Element("Url").Value,
+					Name = b.Element("Name")?.Value,
 					ContentType = b.Element("Properties")?.Element("Content-Type")?.Value,
 					ContentLength = b.Element("Properties")?.Element("Content-Length")?.Value
 				});
