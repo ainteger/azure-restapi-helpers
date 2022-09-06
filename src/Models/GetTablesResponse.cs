@@ -1,17 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace Azure.RestApi.Models
 {
 	public class GetTablesResponse
 	{
-		[JsonProperty("value")]
-		public IEnumerable<GetTableResponse> Value { get; set; }
+		[JsonPropertyName("value")]
+		public IEnumerable<GetTableResponse>? Value { get; set; }
 
 		public class GetTableResponse
 		{
-			[JsonProperty("TableName")]
-			public string TableName { get; set; }
+			[JsonPropertyName("TableName")]
+			public string? TableName { get; set; }
 		}
 	}
 }

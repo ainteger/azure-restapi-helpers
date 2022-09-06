@@ -2,8 +2,8 @@
 {
 	public interface IBlobData
 	{
-		string Name { get; }
-		string ContentType { get; }
-		string ContentLength { get; }
+		string? Name { get; }
+		string? ContentType { get; }
+		string? ContentLength { get; }
 	}
 }

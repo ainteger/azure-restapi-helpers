@@ -1,6 +1,4 @@
 ﻿using Azure.RestApi;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,7 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			
 			services.AddHttpClient<IAzureTableClient, AzureTableClient>();
 			services.AddHttpClient<IAzureBlobClient, AzureBlobClient>();
-			services.AddHttpClient<IAzureQueueClient, AzureQueueClient>();
 
 			services.Configure(configure);
 

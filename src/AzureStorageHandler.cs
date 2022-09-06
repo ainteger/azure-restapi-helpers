@@ -1,10 +1,6 @@
 ﻿using Azure.RestApi.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
 
 namespace Azure.RestApi
@@ -20,7 +16,7 @@ namespace Azure.RestApi
 			StorageKey = storageAuthentication.Value.StorageKey;
 		}
 
-		public HttpRequestMessage GetRequest(StorageType storageType, HttpMethod method, string resource, byte[] requestBody = null, string ifMatch = "")
+		public HttpRequestMessage GetRequest(StorageType storageType, HttpMethod method, string resource, byte[]? requestBody = null, string ifMatch = "")
 		{
 			var now = DateTime.UtcNow;
 
@@ -73,7 +69,7 @@ namespace Azure.RestApi
 			{
 				var messageSignature = string.Format("{0}\n{1}",
 					now.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
-					$"/{StorageAccount}/{request.RequestUri.AbsolutePath.TrimStart('/')}");
+					$"/{StorageAccount}/{request.RequestUri!.AbsolutePath.TrimStart('/')}");
 
 				return $"SharedKeyLite {StorageAccount}:{GetSignature(messageSignature)}";
 			}
@@ -84,7 +80,7 @@ namespace Azure.RestApi
 					(method == HttpMethod.Get || method == HttpMethod.Head) ? string.Empty : request.Content?.Headers?.FirstOrDefault(x => x.Key == "Content-Length").Value.FirstOrDefault() ?? string.Empty,
 					ifMatch,
 					GetCanonicalizedHeaders(request),
-					GetCanonicalizedResource(storageType, request.RequestUri, StorageAccount)
+					GetCanonicalizedResource(storageType, request.RequestUri!, StorageAccount)
 					);
 
 				return $"SharedKey {StorageAccount}:{GetSignature(messageSignature)}";
@@ -118,7 +114,7 @@ namespace Azure.RestApi
 
 				foreach (string key in queryStringValues.Keys)
 				{
-					queryString.Add(key?.ToLowerInvariant(), string.Join(",", queryStringValues[key].OrderBy(x => x)));
+					queryString.Add(key.ToLowerInvariant(), string.Join(",", queryStringValues[key].OrderBy(x => x)));
 				}
 			}
 

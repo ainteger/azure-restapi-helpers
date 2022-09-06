@@ -1,11 +1,6 @@
 ﻿using Azure.RestApi.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Azure.RestApi
 {
@@ -23,7 +18,7 @@ namespace Azure.RestApi
 		public async Task<AzureResponse> CreateTableAsync(string tableName)
 		{
 			var requestModel = new CreateTableRequest { TableName = tableName };
-			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(requestModel)));
+			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Post, "Tables", Encoding.UTF8.GetBytes(JsonSerializer.Serialize(requestModel)));
 			var response = await Client.SendAsync(request);
 			return new AzureResponse(response);
 		}
@@ -35,25 +30,25 @@ namespace Azure.RestApi
 			return new AzureResponse(response);
 		}
 
-		public async Task<IEnumerable<string>> ListTablesAsync()
+		public async Task<IEnumerable<string>?> ListTablesAsync()
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"Tables");
 			var response = await Client.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
-				var json = await response.Content.ReadAsStringAsync();
-				var data = JsonConvert.DeserializeObject<GetTablesResponse>(json);
-				if (data != null)
+				var json = await response.Content.ReadAsStreamAsync();;
+				var data = await JsonSerializer.DeserializeAsync<GetTablesResponse>(json);
+				if (data?.Value != null)
 				{
-					return data.Value.Select(table => table.TableName);
+					return data.Value.Select(table => table.TableName!);
 				}
 			}
 
 			return default(IEnumerable<string>);
 		}
 
-		public async Task<string> GetRowsAsync(string table, string filter = null)
+		public async Task<string?> GetRowsAsync(string table, string? filter = null)
 		{
 			if (!string.IsNullOrEmpty(filter))
 			{
@@ -71,7 +66,7 @@ namespace Azure.RestApi
 			return default(string);
 		}
 
-		public async Task<string> GetRowOrDefaultAsync(string table, string partitionKey, string rowKey)
+		public async Task<string?> GetRowOrDefaultAsync(string table, string partitionKey, string rowKey)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Table, HttpMethod.Get, $"{table}(PartitionKey='{partitionKey}',RowKey='{rowKey}')");
 			var response = await Client.SendAsync(request);

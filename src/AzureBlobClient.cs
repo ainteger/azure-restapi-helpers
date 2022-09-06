@@ -30,7 +30,7 @@ namespace Azure.RestApi
 			return new AzureResponse(response);
 		}
 
-		public async Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName)
+		public async Task<byte[]?> GetBlobOrDefaultAsync(string container, string contentName)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}/{contentName}");
 			var response = await Client.SendAsync(request);
@@ -50,7 +50,7 @@ namespace Azure.RestApi
 			return new AzureResponse(response);
 		}
 
-		public async Task<IEnumerable<IBlobData>> ListBlobsAsync(string container)
+		public async Task<IEnumerable<IBlobData>?> ListBlobsAsync(string container)
 		{
 			var request = AzureStorageHandler.GetRequest(StorageType.Blob, HttpMethod.Get, $"{container}?restype=container&comp=list");
 			var response = await Client.SendAsync(request);
@@ -61,7 +61,7 @@ namespace Azure.RestApi
 
 				var xml = XElement.Parse(result);
 
-				return xml.Element("Blobs").Elements("Blob").Select(b => new BlobData
+				return xml.Element("Blobs")!.Elements("Blob").Select(b => new BlobData
 				{
 					Name = b.Element("Name")?.Value,
 					ContentType = b.Element("Properties")?.Element("Content-Type")?.Value,

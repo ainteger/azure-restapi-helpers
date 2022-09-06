@@ -2,7 +2,7 @@
 {
     public sealed class AzureRestApiOptions
     {
-        public string StorageAccountName { get; set; }
-        public string StorageKey { get; set; }
+        public string StorageAccountName { get; set; } = "";
+        public string StorageKey { get; set; } = "";
     }
 }

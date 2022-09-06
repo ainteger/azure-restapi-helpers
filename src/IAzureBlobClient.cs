@@ -7,8 +7,8 @@ namespace Azure.RestApi
 	public interface IAzureBlobClient
 	{
 		Task<AzureResponse> PutBlobAsync(string container, string contentName, byte[] content);
-		Task<byte[]> GetBlobOrDefaultAsync(string container, string contentName);
+		Task<byte[]?> GetBlobOrDefaultAsync(string container, string contentName);
 		Task<AzureResponse> DeleteBlobAsync(string container, string contentName);
-		Task<IEnumerable<IBlobData>> ListBlobsAsync(string container);
+		Task<IEnumerable<IBlobData>?> ListBlobsAsync(string container);
 	}
 }

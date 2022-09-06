@@ -1,6 +1,4 @@
 using System.Net;
-using System.Linq;
-using System.Net.Http;
 
 namespace Azure.RestApi.Models
 {
@@ -8,7 +6,7 @@ namespace Azure.RestApi.Models
 	{
 		public bool IsSuccess { get; }
 		public HttpStatusCode StatusCode { get; }
-		public string ErrorCode { get; }
+		public string? ErrorCode { get; }
 
 		public AzureResponse(HttpResponseMessage response)
 		{

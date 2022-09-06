@@ -3,7 +3,6 @@
 	public enum StorageType
 	{
 		Table,
-		Queue,
 		Blob
 	}
 }
